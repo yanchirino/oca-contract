@@ -126,7 +126,22 @@ class SaleSubscriptionLine(models.Model):
                     pricelist=record.sale_subscription_id.pricelist_id.id,
                     uom=record.product_id.uom_id.id,
                 )
-                record.price_unit = record._get_display_price(product)
+                price = record._get_display_price(product)
+                # Calculate price without taxes if taxes are included
+                taxes = record.tax_ids.filtered(
+                    lambda t: t.price_include_override == "tax_included"
+                )
+                if taxes:
+                    # Use compute_all to get the price without taxes
+                    tax_result = taxes.compute_all(
+                        price,
+                        record.currency_id,
+                        1,
+                        product=record.product_id,
+                        partner=record.sale_subscription_id.partner_id,
+                    )
+                    price = tax_result["total_excluded"]
+                record.price_unit = price
 
     @api.depends(
         "product_id",

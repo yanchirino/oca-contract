@@ -337,6 +337,11 @@ class SaleSubscription(models.Model):
         return order_id
 
     def generate_invoice(self):
+        # Validate that there are subscription lines
+        if not self.sale_subscription_line_ids:
+            raise exceptions(
+                self.env._("Cannot generate invoice without subscription lines.")
+            )
         invoice_number = ""
         message_body = ""
         msg_static = self.env._("Created invoice with reference")
