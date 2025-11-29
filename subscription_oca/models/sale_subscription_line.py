@@ -126,15 +126,7 @@ class SaleSubscriptionLine(models.Model):
                     pricelist=record.sale_subscription_id.pricelist_id.id,
                     uom=record.product_id.uom_id.id,
                 )
-                record.price_unit = product._get_tax_included_unit_price(
-                    record.company_id,
-                    record.sale_subscription_id.currency_id,
-                    fields.Datetime.now(),
-                    "sale",
-                    fiscal_position=record.sale_subscription_id.fiscal_position_id,
-                    product_price_unit=record._get_display_price(product),
-                    product_currency=record.sale_subscription_id.currency_id,
-                )
+                record.price_unit = record._get_display_price(product)
 
     @api.depends(
         "product_id",

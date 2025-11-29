@@ -8,6 +8,7 @@ from markupsafe import Markup
 
 from odoo import Command, api, fields, models
 from odoo.exceptions import AccessError
+from odoo.exceptions import UserError as exceptions
 
 logger = logging.getLogger(__name__)
 
@@ -302,6 +303,11 @@ class SaleSubscription(models.Model):
                 self.check_access("write")
             except AccessError:
                 return self.env["account.move"]
+        # Validate journal type
+        if self.journal_id and self.journal_id.type != "sale":
+            raise exceptions(
+                self.env._("The journal must be a sale journal to create invoices.")
+            )
         line_ids = []
         for line in self.sale_subscription_line_ids:
             line_values = line._prepare_account_move_line()
@@ -412,15 +418,12 @@ class SaleSubscription(models.Model):
         }
 
     def _compute_sale_order_ids_count(self):
-        data = self.env["sale.order"].read_group(
+        data = self.env["sale.order"]._read_group(
             domain=[("order_subscription_id", "in", self.ids)],
-            fields=["order_subscription_id"],
             groupby=["order_subscription_id"],
+            aggregates=["__count"],
         )
-        count_dict = {
-            item["order_subscription_id"][0]: item["order_subscription_id_count"]
-            for item in data
-        }
+        count_dict = {item[0].id if item[0] else False: item[1] for item in data}
         for record in self:
             record.sale_order_ids_count = count_dict.get(record.id, 0)
 
