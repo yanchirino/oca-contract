@@ -325,7 +325,7 @@ class TestSubscriptionOCA(ProductCommon, BaseCommon):
                             "name": self.product_1.name,
                             "product_id": self.product_1.id,
                             "product_uom_qty": 2,
-                            "product_uom": self.product_1.uom_id.id,
+                            "product_uom_id": self.product_1.uom_id.id,
                             "price_unit": self.product_1.list_price,
                         },
                     )
