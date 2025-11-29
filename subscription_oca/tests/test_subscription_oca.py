@@ -319,6 +319,7 @@ class TestSubscriptionOCA(ProductCommon, BaseCommon):
                 "partner_id": self.partner.id,
                 "partner_invoice_id": self.partner.id,
                 "partner_shipping_id": self.partner.id,
+                "pricelist_id": self.pricelist1.id,
                 "order_line": [
                     Command.create(
                         {

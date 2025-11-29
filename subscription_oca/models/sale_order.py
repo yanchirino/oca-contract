@@ -23,7 +23,7 @@ class SaleOrder(models.Model):
 
     @api.depends("subscription_ids")
     def _compute_subscriptions_count(self):
-        data = self.env["sale.subscription"].read_group(
+        data = self.env["sale.subscription"]._read_group(
             domain=[("sale_order_id", "in", self.ids)],
             fields=["sale_order_id"],
             groupby=["sale_order_id"],
