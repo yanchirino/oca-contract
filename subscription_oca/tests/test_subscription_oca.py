@@ -558,7 +558,7 @@ class TestSubscriptionOCA(ProductCommon, BaseCommon):
             self.tmpl1.recurring_rule_type, self.tmpl1.recurring_interval
         )
         self.sub_line.product_uom_qty = 100
-        self.env.user.groups_id = [
+        self.env.user.group_ids = [
             Command.link(self.env.ref("sale.group_discount_per_so_line").id)
         ]
         disc = self.sub_line.read(["discount"])
