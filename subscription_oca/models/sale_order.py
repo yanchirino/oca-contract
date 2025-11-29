@@ -60,7 +60,8 @@ class SaleOrder(models.Model):
                     "user_id": self.env.context.get("uid", self.env.uid),
                     "template_id": subscription_tmpl.id,
                     "pricelist_id": self.partner_id.property_product_pricelist.id
-                    or self.pricelist_id.id,
+                    if self.partner_id.property_product_pricelist
+                    else self.pricelist_id.id,
                     "date_start": date.today(),
                     "sale_order_id": self.id,
                     "sale_subscription_line_ids": subscription_lines,
